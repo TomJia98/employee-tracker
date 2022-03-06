@@ -7,6 +7,7 @@ const {
   getDepartments,
   getDepartmentId,
   addRole,
+  getRolesAndManagers,
 } = require("./sql");
 
 const askQuestions = () => {
@@ -33,11 +34,17 @@ const askQuestions = () => {
       case "add a role":
         getDepartments().then((data) => askRole(data))
         .then((data) => {
-getDepartmentId(data).then((data)=>addRole(data))
-}).then(() => wait())
-
+        getDepartmentId(data).then((data)=>addRole(data))
+        })
+        .then(() => wait())
         break;
       case "add an employee":
+        getRolesAndManagers().then((data) => {
+            console.log(data);
+        })
+        //get roles.title
+      //get employees, concat name
+      //prompt for fname,lname, role (from roles.title), manager (from employees.id)
         break;
       case "update an employee role":
         break;

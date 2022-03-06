@@ -2,6 +2,21 @@ const mysql = require("mysql2/promise");
 const cTable = require('console.table');
 
 
+async function getRolesAndManagers() {
+    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees_database', password: "MyNewPass",});
+
+    const roles = await connection.execute("SELECT roles.id, roles.title FROM roles")
+
+    const managers = await connection.execute("SELECT employees.id, CONCAT(employees.first_name, ' ', employees.last_name) AS manager FROM employees" )
+
+    const data = [];
+
+    data.push(roles[0]);
+    data.push(managers[0]);
+    return data
+
+}
+
 
   async function addRole(data) {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees_database', password: "MyNewPass",});
@@ -25,7 +40,7 @@ async function addDepartment(data) {
 async function viewAllRoles() {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees_database', password: "MyNewPass",});
 
-    const rolesTable = await connection.execute("SELECT roles.id, roles.title, departments.name, roles.salary FROM departments INNER JOIN roles ON departments.id = roles.department_id;")
+    const rolesTable = await connection.execute("SELECT roles.id, roles.title, departments.name AS department, roles.salary FROM departments INNER JOIN roles ON departments.id = roles.department_id;")
     const table = cTable.getTable(rolesTable[0]);
     console.log(table)
 
@@ -81,35 +96,15 @@ async function viewAllEmployees() {
     departments.name AS department,
     roles.salary,
     CONCAT(manager.first_name, ' ', manager.last_name) AS manager
-FROM employees
-      LEFT JOIN roles ON employees.role_id = roles.id
-      LEFT JOIN departments ON roles.department_id = departments.id
-      LEFT JOIN employees manager ON manager.id = employees.manager_id;`)
+    FROM employees
+    LEFT JOIN roles ON employees.role_id = roles.id
+    LEFT JOIN departments ON roles.department_id = departments.id
+    LEFT JOIN employees manager ON manager.id = employees.manager_id;`)
 
       const table = cTable.getTable(viewEmployees[0]);
 
       console.log(table);
 }
-
-
-
-
-// const viewAllEmployees = function () {//not working
-//   db.query(
-//     "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name, roles.salary, employees.manager_id FROM ((employees INNER JOIN roles ON employees.role_id = role.id) INNER JOIN employees ON employees.manager_id = employees.id)",
-//     function (err, results) {
-//       console.table(results);
-//       if (err) {
-//         console.log(err);
-//       }
-//     }
-//   );
-// };
-
-
-
-
-
 
 
 module.exports = {
@@ -120,4 +115,5 @@ module.exports = {
   getDepartments,
   getDepartmentId,
   addRole,
+  getRolesAndManagers,
 };

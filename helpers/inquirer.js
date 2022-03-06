@@ -55,6 +55,27 @@ const askRole = (deptsArr) => inquirer
 
 ])
 
+const askEmployee = (data) => inquirer
+.prompt ([
+        {
+        name:"firstName",
+        message:"What is your emoloyees first name?",
+        type:"input"
+        },
+        {
+        name:"lastName",
+        message:"What is your employees last name?",
+        type:"input"
+
+        },
+        {
+         name:"title",
+         message: "What is your employees title?"
+
+        }
+
+    ])
+
 module.exports = {
     questions,
     askRole,
