@@ -1,29 +1,62 @@
 const inquirer = require("inquirer");
-const cTable = require('console.table');
-const mysql = require("mysql2");
-
-const db = mysql.createConnection(
-    {
-      host: "localhost",
-      // MySQL username,
-      user: "root",
-      // MySQL password
-      password: "MyNewPass",
-      database: "employees_db",
-    },
-  );
 
 
-const viewAllDepartments = function() { 
-    db.query("SELECT * FROM department", function (err, results) {
-        console.table(results);
-    })
-};
 
-const viewAllRoles = function() { 
-    db.query("SELECT * FROM roles", function (err, results) {
-        console.table(results);
-    })
-};
 
-module.exports = {viewAllDepartments, viewAllRoles}
+
+const questions = () => inquirer
+.prompt([
+  {
+    type: "list",
+    message: "What would you like to do",
+    name: "mainQuestion",
+    choices: [
+      "view all departments",
+      "view all roles",
+      "view all employees",
+      "add a department",
+      "add a role",
+      "add an employee",
+      "update an employee role",
+      "quit",
+    ],
+  },
+]);
+
+const askDepartment = () => inquirer
+.prompt([
+        {
+            name:"newDepartment",
+            message:"What is the name of your new department?",
+            type:"input"
+        }
+    
+]);
+
+const askRole = (deptsArr) => inquirer
+.prompt([
+        {
+            name:"title",
+            message:"what is the title of your new role?",
+            type:"input"
+        },
+        {
+            name:"salary",
+            message:"What is the salary of this role?",
+            type:"input"
+        },
+        {
+            type:"list",
+            name:"department",
+            message:"which department does your role fall under?",
+            choices:deptsArr,
+
+        }
+
+])
+
+module.exports = {
+    questions,
+    askRole,
+    askDepartment
+}
