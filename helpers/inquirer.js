@@ -43,7 +43,7 @@ const askRole = (deptsArr) => inquirer
         {
             name:"salary",
             message:"What is the salary of this role?",
-            type:"input"
+            type:"number"
         },
         {
             type:"list",

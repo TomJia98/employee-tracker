@@ -5,6 +5,8 @@ const {
   viewAllEmployees,
   addDepartment,
   getDepartments,
+  getDepartmentId,
+  addRole,
 } = require("./sql");
 
 const askQuestions = () => {
@@ -24,12 +26,15 @@ const askQuestions = () => {
         break;
       case "add a department":
         askDepartment().then((data) => {
-          addDepartment(data);
+          addDepartment(data)
           wait();
         });
         break;
       case "add a role":
-        getDepartments().then((data) => askRole(data));
+        getDepartments().then((data) => askRole(data))
+        .then((data) => {
+getDepartmentId(data).then((data)=>addRole(data))
+}).then(() => wait())
 
         break;
       case "add an employee":
