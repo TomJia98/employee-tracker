@@ -55,6 +55,23 @@ const askRole = (deptsArr) => inquirer
 
 ])
 
+const askUpdateEmployee = (data) => inquirer
+.prompt ([
+          {
+            type:"list",
+            name:"employeeName",
+            message:"Which employee do you want to update",
+            choices:data[3]
+          },
+          {
+            type:"list",
+            name:"employeeRole",
+            message:"What role would you like to give them?",
+            choices:data[1]
+          }
+
+])
+
 const askEmployee = (data) => inquirer
 .prompt ([
         {
@@ -69,15 +86,25 @@ const askEmployee = (data) => inquirer
 
         },
         {
+         type:"list",
          name:"title",
-         message: "What is your employees title?"
+         message: "What is your employees title?",
+         choices:data[1]
+        },
+        {
+          type:"list",
+          name:"manager",
+          message: "Who is your employees manager?",
+          choices:data[3]
+         }
 
-        }
 
     ])
 
 module.exports = {
     questions,
     askRole,
-    askDepartment
+    askDepartment,
+    askEmployee,
+    askUpdateEmployee
 }

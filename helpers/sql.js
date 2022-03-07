@@ -2,6 +2,48 @@ const mysql = require("mysql2/promise");
 const cTable = require('console.table');
 
 
+async function updateEmployee(data) {
+  const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees_database', password: "MyNewPass",});
+
+  const roles_Id = await connection.execute('SELECT `id` FROM `roles` WHERE `title` = (?)', [data.employeeRole]);
+
+    const role_id = roles_Id[0][0].id;
+
+
+
+  const update = await connection.execute("UPDATE `employees` SET role_id = (?) WHERE CONCAT(employees.first_name, ' ', employees.last_name) = (?)", [role_id, data.employeeName])
+  update;
+  console.log(`${data.employeeName}s role has been updated`)
+}
+
+async function addEmployee(data) {
+
+   let managerId = ""
+    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees_database', password: "MyNewPass",});
+
+    const roleId = await connection.execute('SELECT `id` FROM `roles` WHERE `title` = (?)', [data.title]);
+ 
+    if (data.manager !== "None") {
+     managerId = await connection.execute("SELECT `id` FROM `employees` WHERE CONCAT(employees.first_name, ' ', employees.last_name) = (?)", [data.manager]);
+      } else { 
+         managerId = "NULL"
+      }
+let manager_id = ""
+      if (managerId !== "NULL") {
+       manager_id = managerId[0][0].id;
+      } else {
+        manager_id = managerId;
+      }
+      const role_id = roleId[0][0].id;
+
+      const addingEmployee = await connection.execute("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)",
+    [data.firstName, data.lastName, role_id, manager_id])
+    addingEmployee
+    console.log(`${data.firstName} has been added to the database`)
+
+
+}
+
 async function getRolesAndManagers() {
     const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees_database', password: "MyNewPass",});
 
@@ -11,8 +53,25 @@ async function getRolesAndManagers() {
 
     const data = [];
 
+
+    let rolesArr = [];
+    for (i=0; i < roles[0].length; i++){
+        let string = roles[0][i].title;
+        rolesArr.push(string);
+    };//gets the object from the db and returns it as an array of strings
+     
+    let managersArr = [];
+    for (i=0; i < managers[0].length; i++){
+        let string = managers[0][i].manager;
+        managersArr.push(string);
+    };
+    managersArr.push("None")
+
+
     data.push(roles[0]);
+    data.push(rolesArr)
     data.push(managers[0]);
+    data.push(managersArr)
     return data
 
 }
@@ -116,4 +175,6 @@ module.exports = {
   getDepartmentId,
   addRole,
   getRolesAndManagers,
+  addEmployee,
+  updateEmployee,
 };

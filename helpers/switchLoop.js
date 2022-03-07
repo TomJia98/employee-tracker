@@ -1,4 +1,4 @@
-const { questions, askDepartment, askRole } = require("./inquirer");
+const { questions, askDepartment, askRole, askEmployee, askUpdateEmployee } = require("./inquirer");
 const {
   viewAllDepartments,
   viewAllRoles,
@@ -8,6 +8,8 @@ const {
   getDepartmentId,
   addRole,
   getRolesAndManagers,
+  addEmployee,
+  updateEmployee,
 } = require("./sql");
 
 const askQuestions = () => {
@@ -40,13 +42,23 @@ const askQuestions = () => {
         break;
       case "add an employee":
         getRolesAndManagers().then((data) => {
-            console.log(data);
+          askEmployee(data).then((data) => {
+            addEmployee(data).then(()=> wait())
         })
-        //get roles.title
-      //get employees, concat name
-      //prompt for fname,lname, role (from roles.title), manager (from employees.id)
+        })
         break;
       case "update an employee role":
+        getRolesAndManagers().then((data)=> {
+
+          askUpdateEmployee(data).then((data)=> {
+
+            updateEmployee(data).then(()=> wait())
+          })
+        })
+       
+        //prompt employees then title
+        //update title in db
+
         break;
 
       case "quit":
