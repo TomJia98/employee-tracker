@@ -49,16 +49,10 @@ const askQuestions = () => {
         break;
       case "update an employee role":
         getRolesAndManagers().then((data)=> {
-
           askUpdateEmployee(data).then((data)=> {
-
             updateEmployee(data).then(()=> wait())
           })
         })
-       
-        //prompt employees then title
-        //update title in db
-
         break;
 
       case "quit":
@@ -71,7 +65,7 @@ const askQuestions = () => {
 const wait = () =>
   setTimeout(() => {
     askQuestions();
-  }, 500);
+  }, 1000);
 
 module.exports = {
   askQuestions,
